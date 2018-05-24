@@ -23,11 +23,22 @@ def merge(df1, df2) :
     df = df1.join(df2, how='outer')
     return df
 
-def merged_df(file1, file2) :
+""" def error_calling(df) :
+    for i in range(0, len(df)) :
+        if type(df.iloc[i]) is not int or type(df.iloc[i]) is not float :
+            print("Warning: In row number %s of dataframe, expression value is invalid. Please ensure a number value is present" % i) """
+
+def merge_df(file1, file2) :
     f1 = loadf(file1)
     f2 = loadf(file2)
+    #error_calling(f1)
+    #error_calling(f2)
+    x = []
+    x.append(f1.iloc[1])
+    print(type(x[0]))
     df = merge(f1, f2)
     return df
+
 
 import argparse
 parser = argparse.ArgumentParser()
@@ -37,8 +48,9 @@ parser.add_argument('-2', '--sample2', help = "File of sample 2.")
 
 args = parser.parse_args()
 
-merged = merged_df(args.sample1, args.sample2)
-print(merged)
+merged = merge_df(args.sample1, args.sample2)
+# print(merged)
+
 
 """ df = pd.DataFrame(np.random.rand(50, 4), columns=['a', 'b', 'c', 'd'])
 df.plot.scatter(x='a', y='b')
