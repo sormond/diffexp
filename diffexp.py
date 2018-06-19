@@ -29,26 +29,41 @@ def merge(df1, df2) :
 
 def stats_dataframe(file1, file2) :
     # loads in two expression value files and creates dataframes by calling function 'loadf'
-    try:
+    try :
         f1 = loadf(file1)
         f2 = loadf(file2)
-    except:
-        print("Error: file loading failed. Ensure two tab-delimited files were entered using appropriate flags. Ensure column headed 'gene' exists containing gene names. Please see README.md for further information on usage.")
+    except :
+        print("Error: file loading failed. Ensure two tab-delimited files were entered using appropriate flags. Ensure column headed 'gene' exists containing gene names. See README.md for further information on usage.")
         sys.exit()
-    # merges two dataframes into one
-    if len(f1) != len(f2) :
-        print("Warning: Expression value files loaded in do not contain same number of rows.")
-    mdf = merge(f1, f2)
+    # extracts the two sample labels for index and plot purposes
+    global sample_index
+    try :
+        sample_index = list(f1.columns.values)
+        sample_index.append(f2.columns.values[0])
+    # checks that both samples were labelled
+    except :
+        print("Error: Samples may be incorrectly labelled. Ensure both sample files are correctly headed. See README.md for further information on usage.")
+        sys.exit()
+    # checks that both samples were labelled
+    if len(sample_index) != 2 :
+        print("Error: Samples are not correctly labelled. Ensure both sample files are correctly headed. See README.md for further information on usage.")
+        sys.exit()
+    # checks that sample names are not identical
+    if sample_index[0] == sample_index[1] :
+        print("Error: Sample headers are identical. Ensure sample files have different header sample labels. See README.md for further information on usage.")
+        sys.exit()
+    # extracts gene labels from each expression file and checks if all gene labels are equal
     f1_genes = sorted(f1.index[0:].format())
     f2_genes = sorted(f2.index[0:].format())
     if f1_genes != f2_genes :
-        print("Warning: Gene labels are not identical in expression value files loaded.")
-    global o
-    o = list(mdf.columns.values)
+        print("Error: Gene labels are not identical in expression value files loaded.")
+        sys.exit()
+    # merges the two dataframes into one
+    mdf = merge(f1, f2)
     # sums the total of each expession column for statistical calculations
     try:
-        A = (sum(mdf[o[0]]))
-        B = (sum(mdf[o[1]]))
+        A = (sum(mdf[sample_index[0]]))
+        B = (sum(mdf[sample_index[1]]))
     except:
         print("Error: Failed to sum expression values. Please ensure values are numerical only.")
         sys.exit()
@@ -61,7 +76,6 @@ def stats_dataframe(file1, file2) :
     for i in range(0, len(np_df)) :
         a = np_df[i,0]
         b = np_df[i,1]
-        """ don't know if it's correct to have this as 'NaN'? """
         # 'if' 'else' statement which prevents error if two expression values for same gene = zero
         if a == 0 and b == 0 :
             xsquared_values.append(np.nan)
@@ -72,9 +86,12 @@ def stats_dataframe(file1, file2) :
             x = np.array([[a,b], [A, B]])
             chi = chi2_contingency(x)
             xsquared_values.append(chi[0])
-            p_values.append(chi[1])    
+            p_values.append(chi[1]) 
+    # creates numpy array out of p_values from for loop   
     p_values = np.array(p_values)
-    mask = np.isfinite(p_values) 
+    # creates Boolean numpy array with p_values with TRUE if not 'NaN'
+    mask = np.isfinite(p_values)
+    # creates empty numpy arrays with sample???
     pval_corrected = np.empty(p_values.shape)
     null_hypothesis = np.empty(p_values.shape)
     pval_corrected.fill(np.nan)
@@ -86,11 +103,12 @@ def stats_dataframe(file1, file2) :
     p_values = pd.Series(p_values)
     pval_corrected = pd.Series(pval_corrected)
     null_hypothesis = pd.Series(null_hypothesis)
-    mdf['FDR_pvalues'] = pval_corrected.values
-    mdf['null_hyp_test'] = null_hypothesis.values
     mdf['x_sq_values'] = xsquared_values.values
     mdf['p_values'] = p_values.values
-    mdf.to_csv(args.datafile + ".csv", header=True, sep=',', mode='w')
+    mdf['FDR_pvalues'] = pval_corrected.values
+    mdf['null_hyp_test'] = null_hypothesis.values
+    if args.datafile :
+        mdf.to_csv(args.datafile + ".csv", header=True, sep=',', mode='w')
     return mdf
 
 def makeplot(dataframe) :
@@ -103,7 +121,7 @@ def makeplot(dataframe) :
             colors2[c] = 'red'
         else :
             colors2[c] = 'black'
-    df.plot.scatter(o[0], o[1], c=colors2)  # add colour labels
+    df.plot.scatter(sample_index[0], sample_index[1], c=colors2)  # add colour labels
     if args.outstempdf :
         plt.savefig(args.outstempdf + ".pdf")
     elif args.outstemjpeg :
@@ -119,12 +137,15 @@ def mainfunction() :
 # command-line executable script
 import argparse
 parser = argparse.ArgumentParser()
-parser.add_argument('-1', '--sample1', help = "File of sample 1.")
-parser.add_argument('-2', '--sample2', help = "File of sample 2.")
+parser.add_argument('-1', '--sample1', help = "File for sample 1.")
+parser.add_argument('-2', '--sample2', help = "File for sample 2.")
 parser.add_argument('-p', '--outstempdf', help = "Stem name for output pdf plot. Must be specified.")
 parser.add_argument('-j', '--outstemjpeg', help = "Stem name for output jpeg plot. Must be specified.")
 parser.add_argument('-d', '--datafile', help = "Stem name for output csv file. Must be specified.")
 args = parser.parse_args()
 
-# calls function and returns to variable 'df'
-mainfunction()
+if args.sample1 and args.sample2 and args.outstempdf :
+    # calls function and returns to variable 'df'
+    mainfunction()
+else :
+    print("Error: Necessary arguments have not been provided. Please see README.md for usage information.")
