@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 import pandas as pd
 import numpy as np
 import numpy.ma as ma # for masking functions
@@ -116,12 +117,21 @@ def makeplot(dataframe) :
     colors2 = np.empty(colors.shape, dtype=str)
     for c in range(0, len(colors)) :
         if colors[c] == True :
-            colors2[c] = 'blue'
-        elif colors[c] == False :
             colors2[c] = 'red'
+        elif colors[c] == False :
+            colors2[c] = 'blue'
         else :
             colors2[c] = 'black'
     df.plot.scatter(sample_index[0], sample_index[1], c=colors2)  # add colour labels
+    plt.xlabel(sample_index[0] + " expression value")
+    plt.ylabel(sample_index[1] + " expression value")
+    # Add plot legend
+    classes = ['FDR p-value ≤ 0.05', 'FDR p-value > 0.05']
+    class_colors = ['r', 'b']
+    recs = []
+    for i in range(0,len(class_colors)):
+        recs.append(mpatches.Rectangle((0,0),1,1,fc=class_colors[i]))
+    plt.legend(recs,classes,loc=4)
     if args.outstempdf :
         plt.savefig(args.outstempdf + ".pdf")
     elif args.outstemjpeg :

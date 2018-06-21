@@ -4,11 +4,11 @@ A programme to determine differential expression of genes between two samples
 ## Dependencies
 - Python 3
 - The following Python packages:
-	matplotlib.pyplot
-	pandas
-	numpy
-	scipy
-	statsmodels
+		matplotlib
+		pandas
+		numpy
+		scipy
+		statsmodels
 
 
 ## File inputs
@@ -30,12 +30,15 @@ Two sample files must be given using '-1' and '-2' flag. '-p' flag is required, 
 
    ./diffexp.py -1 *sample1.txt* -2 *sample2.txt* -p *plotname* -d *csvname*
 
+
+## Statistical Analysis
+
    
 ## Example
-Example test files are avialable in the directory 'ExampleFiles': 'sampleA.txt' and 'sampleB.txt'.
+Example test files are avialable in the directory 'ExampleFiles': 'sampleA.txt' and 'sampleB.txt' and 'sampleBprime.txt'.
 
 To run script to generate pdf plot and csv file (must be in working directory containing diffexp.py):
 
    ./diffexp.py -1 sampleA.txt -2 sample2.txt -p plot -d datatable
 
-Running this script creates 'plot.pdf' and 'datatable.csv' and adds to the working directory. A warning will appear: 'Warning: Expession values were zero from both samples for gene ['EfM3.000130'], p-values will be 'NaN' for these and they will not appear on the plot".
+Running this script creates 'plot.pdf' and 'datatable.csv' and adds to the working directory. A warning will appear: 'Warning: Expession values were zero from both samples for gene ['EfM3.000130'], p-values will be 'NaN' for these and they will not appear on the plot". This indicates that the gene with expression values of '0' for each sample are not included in the analysis.
