@@ -2,13 +2,15 @@
 A programme to determine differential expression of genes between two samples
 
 ## Dependencies
-- Python 3
-- The following Python packages:
-		matplotlib
-		pandas
-		numpy
-		scipy
-		statsmodels
+
+1. Python
+
+2. The following Python packages:
+  * matplotlib
+  * pandas
+  * numpy
+  * scipy
+  * statsmodels
 
 
 ## File inputs
@@ -18,7 +20,7 @@ A programme to determine differential expression of genes between two samples
 
 ## File outputs
 
-* PDF Plot : A scatter plot. Each datapoint is expression value of one sample against other sample. Blue datapoints represent significant expression differences (null-hypothesis = FALSE) according to an FDR p-value < 0.05. Red datapoints represent no significant difference (null-hypothesis = TRUE).
+* PDF Plot : A scatter plot. Each datapoint is expression value of one sample against other sample. Red datapoints represent significant expression differences (null-hypothesis = FALSE) according to an FDR p-value =< 0.05. Blue datapoints represent no significant difference (null-hypothesis = TRUE).
 
 
 * CSV File (optional): A script-assembled table containing input genes and expression values, as well as, for each gene, X-squared values, p-values, FDR-corrected p-values and the null-hypothesis boolean value (0=TRUE or 1=FALSE).
