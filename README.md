@@ -1,9 +1,9 @@
 # diffexp
-A programme to determine differential expression of genes between two samples
+A programme which determines differential gene expression between a list of genes from two samples, outputting a scatter plot and statistical values. Takes two .txt file containing same genes with read counts, and outputs a pdf scatter plot of read counts against each other from both samples, with colour of the plotted datapoint indicating whether the expression difference is significant. Determines significance using the null hypothesis test and false discovery rate-corrected p-values. A table containing statistical values is outputted as a csv file.
 
 ## Dependencies
 
-1. Python
+1. Python3
 
 2. The following Python packages:
   * matplotlib
@@ -29,20 +29,20 @@ A programme to determine differential expression of genes between two samples
 ## Usage
 Two sample files must be given using '-1' and '-2' flag. '-p' flag is required, used to specify the plot stem name. '-d' flag is not required, used to specify the csv stem name.
 
-    ./diffexp.py -1 *sample1.txt* -2 *sample2.txt* -p *plotname* -d *csvname*
+    python ./diffexp.py -1 *sample1.txt* -2 *sample2.txt* -p *plotname* -d *csvname*
 
 
 ## Statistical Analysis
-p-values are calculated using a 2x2 chi-square test using the 'scipy' package 'stats.chi2_contingency' function. To correct for multiple testing, false discover rate (FDR) corrected p-values are calculated. FDR-corrected p-values are calculated from the p-values (disregarding NaN values for genes with reads of '0' from both samples) using the 'statsmodels' package 'stats.multitest' function. This corrects for multiple testing. The null-hypothesis test using an alpha=0.05. Boolean values are returned. '0' = null hypothesis is TRUE. '1' = null hypothesis is FALSE.
+p-values are calculated using a 2x2 chi-square test using the 'scipy' package 'stats.chi2_contingency' function. To correct for multiple testing, false discover rate (FDR) corrected p-values are calculated. FDR-corrected p-values are calculated from the p-values (disregarding NaN values for genes with reads of '0' from both samples) using the 'statsmodels' package 'stats.multitest' function. The null-hypothesis test uses an alpha=0.05. Boolean values are returned. '0' = null hypothesis is TRUE. '1' = null hypothesis is FALSE.
    
 ## Example
-Example test files are avialable in the directory 'ExampleFiles': 'sampleA.txt' and 'sampleB.txt' and 'sampleBprime.txt'.
+Example test files are available in the directory 'ExampleFiles': 'sampleA.txt' and 'sampleB.txt' and 'sampleBprime.txt'.
 
 To run script to generate pdf plot and csv file (must be in working directory containing diffexp.py):
 
-    ./diffexp.py -1 sampleA.txt -2 sample2.txt -p plot -d datatable
+    python ./diffexp.py -1 sampleA.txt -2 sample2.txt -p plot -d datatable
 
-Running this script creates 'plot.pdf' and 'datatable.csv' and adds to the working directory. A warning will appear: 'Warning: Expession values were zero from both samples for gene ['EfM3.000130'], p-values will be 'NaN' for these and they will not appear on the plot". This indicates that the gene with expression values of '0' for each sample are not included in the analysis.
+Running this script creates 'plot.pdf' and 'datatable.csv', adding them to the working directory. A warning will appear: 'Warning: Expression values were zero from both samples for gene ['EfM3.000130'], p-values will be 'NaN' for these and they will not appear on the plot". This indicates that the gene with expression values of '0' for each sample are not included in the analysis.
 
 The example file 'sampleBprime' contains the following:
 
