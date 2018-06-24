@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+""" Code written by Shannon Ormond 2018. Contact email: s.ormond@massey.ac.nz """
+
 # loads in expression value files, first row as headers
 def loadf(file) :
     df = pd.read_csv(file, sep = "\t")
@@ -13,7 +15,7 @@ def merge(df1, df2) :
     df = df1.join(df2, how='outer')
     return df
 
-# creates pandas data frame containing list of genes and expression values and adds columns containing calculated chi x-squared values, p-values, FDR -values and null hyp. test
+# creates pandas data frame containing list of genes and expression values and adds columns containing calculated chi x-squared values, p-values, FDR -values and null hyp test
 def stats_dataframe(file1, file2) :
     # loads in two expression value files and creates dataframes by calling function 'loadf'
     try :
@@ -117,13 +119,14 @@ def makeplot(dataframe) :
     df.plot.scatter(sample_index[0], sample_index[1], c=colors2)
     plt.xlabel(sample_index[0] + " read count")
     plt.ylabel(sample_index[1] + " read count")
-    # Add plot legend
+    # adds plot legend
     classes = ['FDR p-value ≤ 0.05', 'FDR p-value > 0.05']
     class_colors = ['r', 'b']
     recs = []
     for i in range(0,len(class_colors)):
         recs.append(mpatches.Rectangle((0,0),1,1,fc=class_colors[i]))
     plt.legend(recs,classes,loc=4)
+    # writes out plot to .pdf file
     plt.savefig(args.outstempdf + ".pdf")
 
 def mainfunction() :
@@ -131,7 +134,6 @@ def mainfunction() :
     df = stats_dataframe(args.sample1, args.sample2)
     makeplot(df)
 
-# command-line executable script
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import pandas as pd
