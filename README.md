@@ -20,7 +20,7 @@ A programme to determine differential expression of genes between two samples
 
 ## File outputs
 
-* PDF Plot : A scatter plot. Each datapoint is expression value of one sample against other sample. Red datapoints represent significant expression differences (null-hypothesis = FALSE) according to an FDR p-value =< 0.05. Blue datapoints represent no significant difference (null-hypothesis = TRUE).
+* PDF Plot : A scatter plot. Each datapoint is expression value of one sample against other sample. Red datapoints represent significant expression differences (null-hypothesis = FALSE) according to an FDR (false-discovery-rate) p-value =< 0.05. Blue datapoints represent no significant difference (null-hypothesis = TRUE).
 
 
 * CSV File (optional): A script-assembled table containing input genes and expression values, as well as, for each gene, X-squared values, p-values, FDR-corrected p-values and the null-hypothesis boolean value (0=TRUE or 1=FALSE).
@@ -33,7 +33,7 @@ Two sample files must be given using '-1' and '-2' flag. '-p' flag is required, 
 
 
 ## Statistical Analysis
-
+p-values are calculated using a 2x2 chi-square test using the 'scipy' package 'stats.chi2_contingency' function. To correct for multiple testing, false discover rate (FDR) corrected p-values are calculated. FDR-corrected p-values are calculated from the p-values (disregarding NaN values for genes with reads of '0' from both samples) using the 'statsmodels' package 'stats.multitest' function. This corrects for multiple testing. The null-hypothesis test using an alpha=0.05. Boolean values are returned. '0' = null hypothesis is TRUE. '1' = null hypothesis is FALSE.
    
 ## Example
 Example test files are avialable in the directory 'ExampleFiles': 'sampleA.txt' and 'sampleB.txt' and 'sampleBprime.txt'.
@@ -43,3 +43,10 @@ To run script to generate pdf plot and csv file (must be in working directory co
     ./diffexp.py -1 sampleA.txt -2 sample2.txt -p plot -d datatable
 
 Running this script creates 'plot.pdf' and 'datatable.csv' and adds to the working directory. A warning will appear: 'Warning: Expession values were zero from both samples for gene ['EfM3.000130'], p-values will be 'NaN' for these and they will not appear on the plot". This indicates that the gene with expression values of '0' for each sample are not included in the analysis.
+
+The example file 'sampleBprime' contains the following:
+
+* A gene which is not found in sampleA.txt ('EfM3.blimey')
+* Two read values which are not in numerical form ('1e8' and 'bob')
+
+Running the above code with sampleBprime.txt in place of sampleB.txt will call an error message 'Error: Gene labels are not identical in expression value files loaded'. The order of the genes in sampleBprime.txt is not identical to sampleA.txt (e.g. EfM3.000010 is at the bottom and not the top of the list), but this will not effect the program as the script does not require identical genes to be in the same order.
