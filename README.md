@@ -1,4 +1,5 @@
 # diffexp
+This programme was created for a post-graduate university course in computational biology.
 A programme which determines differential gene expression between a list of genes from two samples, outputting a scatter plot and statistical values. Takes two .txt file containing same genes with read counts, and outputs a pdf scatter plot of read counts against each other from both samples, with colour of the plotted datapoint indicating whether the expression difference is significant. Determines significance using the null hypothesis test and false discovery rate-corrected p-values. A table containing statistical values is outputted as a csv file.
 
 ## Dependencies
